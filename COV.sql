@@ -1,19 +1,19 @@
 SELECT *
 FROM PortfolioProject.dbo.co
- ORDER BY 3, 4
+ORDER BY 3, 4
 
 
 /****** Data to be used ******/
 SELECT location, date, total_cases, new_cases, total_deaths, population
-  FROM PortfolioProject.dbo.co
-  ORDER BY 1, 2
+FROM PortfolioProject.dbo.co
+ORDER BY 1, 2
 
   -- Total Cases vs Total Death
 
 SELECT location, date, total_cases, total_deaths, (total_deaths/total_cases)*100 AS Death_Percentage
-  FROM PortfolioProject.dbo.co
-  WHERE location Like '%states%'
-  ORDER BY 1, 2
+FROM PortfolioProject.dbo.co
+WHERE location Like '%states%'
+ORDER BY 1, 2
 
     -- Total Cases vs population
 	-- population percentage
@@ -60,12 +60,12 @@ SELECT date, sum(new_cases) as total_cases, sum(new_deaths) as total_deaths, sum
   --total populaton vs vaccinations
 
 SELECT co.continent, co.location, co.date, co.population, vac.new_vaccinations, sum(vac.new_vaccinations) OVER (Partition by co.location order by co.location, co.date) AS Rolling_people_vacinated
-  FROM PortfolioProject.dbo.co  co
-  Join PortfolioProject.dbo.Covidvac  vac
+FROM PortfolioProject.dbo.co  co
+Join PortfolioProject.dbo.Covidvac  vac
      On co.location = vac.location
-	 and co.date= vac.date
-	 WHERE co.continent is not NULL
-	  ORDER BY 2, 3
+     and co.date= vac.date
+WHERE co.continent is not NULL
+ORDER BY 2, 3
 
 --CTE TABLES
 
@@ -73,11 +73,11 @@ With PopvsVac(continent, location, date, population, new_vaccinations, Rolling_p
 As
 (
 SELECT co.continent, co.location, co.date, co.population, vac.new_vaccinations, sum(vac.new_vaccinations) OVER (Partition by co.location order by co.location, co.date) AS Rolling_people_vacinated
-  FROM PortfolioProject.dbo.co  co
-  Join PortfolioProject.dbo.Covidvac  vac
+FROM PortfolioProject.dbo.co  co
+Join PortfolioProject.dbo.Covidvac  vac
      On co.location = vac.location
-	 and co.date= vac.date
-	 WHERE co.continent is not NULL
+     and co.date= vac.date
+WHERE co.continent is not NULL
 )
 
 SELECT *, (Rolling_people_vacinated/population)*100
@@ -99,11 +99,11 @@ Rolling_people_vacinated numeric
 
 insert PercentPeopleVacinated
 SELECT co.continent, co.location, co.date, co.population, vac.new_vaccinations, sum(vac.new_vaccinations) OVER (Partition by co.location order by co.location, co.date) AS Rolling_people_vacinated
-  FROM PortfolioProject.dbo.co  co
-  Join PortfolioProject.dbo.Covidvac  vac
+FROM PortfolioProject.dbo.co  co
+Join PortfolioProject.dbo.Covidvac  vac
      On co.location = vac.location
-	 and co.date= vac.date
-	 WHERE co.continent is not NULL
+     and co.date= vac.date
+WHERE co.continent is not NULL
 
 SELECT *, (Rolling_people_vacinated/population)*100
 FROM PercentPeopleVacinated
@@ -114,9 +114,9 @@ ORDER BY 2, 3
 
 Create View PercentPopulationVacinated 
 as
-  SELECT co.continent, co.location, co.date, co.population, vac.new_vaccinations, sum(vac.new_vaccinations) OVER (Partition by co.location order by co.location, co.date) AS Rolling_people_vacinated
-  FROM PortfolioProject.dbo.co  co
-  Join PortfolioProject.dbo.Covidvac  vac
+SELECT co.continent, co.location, co.date, co.population, vac.new_vaccinations, sum(vac.new_vaccinations) OVER (Partition by co.location order by co.location, co.date) AS Rolling_people_vacinated
+FROM PortfolioProject.dbo.co  co
+Join PortfolioProject.dbo.Covidvac  vac
      On co.location = vac.location
-	 and co.date= vac.date
+     and co.date= vac.date
 	 WHERE co.continent is not NULL
